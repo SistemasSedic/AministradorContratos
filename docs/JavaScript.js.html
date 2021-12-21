@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>JavaScript.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#acuerdDropDown">acuerdDropDown</a></li><li><a href="global.html#appendData">appendData</a></li><li><a href="global.html#checkID">checkID</a></li><li><a href="global.html#countryDropDown">countryDropDown</a></li><li><a href="global.html#createCountryDropdown">createCountryDropdown</a></li><li><a href="global.html#createTable">createTable</a></li><li><a href="global.html#DataCC">DataCC</a></li><li><a href="global.html#deleteData">deleteData</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#editData">editData</a></li><li><a href="global.html#estadodDropDown">estadodDropDown</a></li><li><a href="global.html#functionInit">functionInit</a></li><li><a href="global.html#getAllData">getAllData</a></li><li><a href="global.html#getDropdownList">getDropdownList</a></li><li><a href="global.html#getFormValues">getFormValues</a></li><li><a href="global.html#getLastTenRows">getLastTenRows</a></li><li><a href="global.html#getRangeByID">getRangeByID</a></li><li><a href="global.html#getRecordById">getRecordById</a></li><li><a href="global.html#getRecordCC">getRecordCC</a></li><li><a href="global.html#getRowIndexByID">getRowIndexByID</a></li><li><a href="global.html#globalVariables">globalVariables</a></li><li><a href="global.html#handleeFormSubmit">handleeFormSubmit</a></li><li><a href="global.html#handleFormSubmit">handleFormSubmit</a></li><li><a href="global.html#identDropDown">identDropDown</a></li><li><a href="global.html#identrepreDropDown">identrepreDropDown</a></li><li><a href="global.html#include">include</a></li><li><a href="global.html#lugarDropDown">lugarDropDown</a></li><li><a href="global.html#populateForm">populateForm</a></li><li><a href="global.html#preventFormSubmit">preventFormSubmit</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#processForm">processForm</a></li><li><a href="global.html#readData">readData</a></li><li><a href="global.html#scolicitanteDropDown">scolicitanteDropDown</a></li><li><a href="global.html#search">search</a></li><li><a href="global.html#tipocdDropDown">tipocdDropDown</a></li><li><a href="global.html#updateData">updateData</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">JavaScript.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Evita el envio del formulario
+ */
+
+ function preventFormSubmit() {
+    var forms = document.querySelectorAll('form');
+    for (var i = 0; i &lt; forms.length; i++) {
+        forms[i].addEventListener('submit', function (event) {
+            event.preventDefault();
+        });
+    }
+}
+window.addEventListener("load", functionInit, true);
+
+/**
+ * Ejecuta algunas funciones cuando la pagina cargue
+ */
+function functionInit() {
+    getLastTenRows();
+    preventFormSubmit();
+
+};
+
+/**
+ * Almacena la información del contrato y crea una tabla con los últimos 10 contratos
+ * @param {object} formObject Formulario
+ */
+function handleFormSubmit(formObject) {
+    google.script.run.withSuccessHandler(createTable).processForm(formObject);
+    document.getElementById("myForm").reset();
+}
+
+/**
+ * Consulta todos los contratis y crea una tabla con los mismos
+ * @param {object} formObject Formulario
+ */
+function handleeFormSubmit(formObject) {
+    google.script.run.withSuccessHandler(createTable).process(formObject);
+    document.getElementById("search-form").reset();
+}
+
+/**
+ * Crea una tabla con los últimos 10 contratos
+ */
+function getLastTenRows() {
+    google.script.run.withSuccessHandler(createTable).getLastTenRows();
+}
+
+/**
+ * Crea una tabla con todos los contratos
+ */
+function getAllData() {
+    document.getElementById('dataTable').innerHTML = "";
+    google.script.run.withSuccessHandler(createTable).getAllData();
+}
+
+
+/**
+ * Crea una tabla con los contratos ingresados
+ * @param {array} dataArray Contratos
+ */
+function createTable(dataArray) {
+    if (dataArray) {
+        var result = "&lt;table class='table table-responsive-sm' style='font-size:0.9em'>" +
+            "&lt;thead class='thead' style='white-space: nowrap'>" +
+            "&lt;tr>" +
+            "&lt;th scope='col'>&lt;/th>" +//Change table headings to match witht he Google Sheet
+            "&lt;th scope='col'>Editar&lt;/th>" +
+            "&lt;th scope='col'>ID&lt;/th>" +
+            "&lt;th scope='col'>Tipo de identificacion&lt;/th>" +
+            "&lt;th scope='col'>Tipo de persona&lt;/th>" +
+            "&lt;th scope='col'>N° de identificacion&lt;/th>" +
+            "&lt;th scope='col'>N° de contrato&lt;/th>" +
+            "&lt;th scope='col'>Razon Social&lt;/th>" +
+            "&lt;th scope='col'>Nombre comercial&lt;/th>" +
+            "&lt;th scope='col'>Nombre del representante&lt;/th>" +
+            "&lt;th scope='col'>Tipo de identificacion del representante&lt;/th>" +
+            "&lt;th scope='col'>N° de identificacion del representante&lt;/th>" +
+            "&lt;th scope='col'>Lugar de expedicion&lt;/th>" +
+            "&lt;th scope='col'>Direccion&lt;/th>" +
+            "&lt;th scope='col'>Email&lt;/th>" +
+            "&lt;th scope='col'>Numero de telefono&lt;/th>" +
+            "&lt;th scope='col'>Departamento&lt;/th>" +
+            "&lt;th scope='col'>Fehca de Inicio&lt;/th>" +
+            "&lt;th scope='col'>Fecha de Terminanción&lt;/th>" +
+            "&lt;th scope='col'>Objeto&lt;/th>" +
+            "&lt;th scope='col'>Alcamce&lt;/th>" +
+            "&lt;th scope='col'>Proyecto/Area&lt;/th>" +
+            "&lt;th scope='col'>Lugar de desarrollo&lt;/th>" +
+            "&lt;th scope='col'>Tipo de contrato&lt;/th>" +
+            "&lt;th scope='col'>Tipo de acuerdo&lt;/th>" +
+            "&lt;th scope='col'>Valor (sin IVA)&lt;/th>" +
+            "&lt;th scope='col'>Anticipo Autorizado(%)&lt;/th>" +
+            "&lt;th scope='col'>Aplica Retegarantia&lt;/th>" +
+            "&lt;th scope='col'>Porcentaje Retegarantia&lt;/th>" +
+            "&lt;th scope='col'>Persona aprobadora&lt;/th>" +
+            "&lt;th scope='col'>Empresa&lt;/th>" +
+            "&lt;th scope='col'>Estado&lt;/th>" +
+            "&lt;th scope='col'>Solicitante&lt;/th>" +
+            "&lt;th scope='col'>Anexos&lt;/th>" +
+            "&lt;th scope='col'>Contrato final&lt;/th>" +
+            "&lt;th scope='col'>Link&lt;/th>" +
+            "&lt;th scope='col'>Estado del contrato&lt;/th>" +
+            "&lt;/tr>" +
+            "&lt;/thead>";
+        for (var i = 0; i &lt; dataArray.length; i++) {
+            result += "&lt;tr>";
+            result += "&lt;td>&lt;/td>";
+            result += "&lt;td>&lt;button type='button' class='btn btn-warning btn-xs editBtn' onclick='editData(this);'>&lt;img src='https://drive.google.com/uc?export=view&amp;id=1c4KbKf9H7spiO4yA0WGp_c8k8WcUyPup'high='70%' width='70%' justify='center'>&lt;/button>&lt;/td>";
+            for (var j = 0; j &lt; dataArray[i].length; j++) {
+                result += "&lt;td>" + dataArray[i][j] + "&lt;/td>";
+            }
+            result += "&lt;/tr>";
+        }
+        result += "&lt;/table>";
+        var div = document.getElementById('search-results');
+        div.innerHTML = result;
+        document.getElementById("message").innerHTML = "";
+    } else {
+        var div = document.getElementById('search-results')
+        div.innerHTML = "Data not found!";
+    }
+}
+
+/**
+ * Permite eliminar un contrato
+ * @param {string} elemento
+ */
+function deleteData(el) {
+    var result = confirm("¿Seguro que quieres eliminar?");
+    if (result) {
+        var recordId = el.parentNode.parentNode.cells[2].innerHTML;
+        google.script.run.withSuccessHandler(createTable).deleteData(recordId);
+    }
+}
+
+/**
+ * Trae la información del contrato seleccionado para su edición
+ * @param {string} el 
+ */
+function editData(el) {
+    var recordId = el.parentNode.parentNode.cells[2].innerHTML; //https://stackoverflow.com/a/32377357/2391195
+    google.script.run.withSuccessHandler(populateForm).getRecordById(recordId);
+}
+
+/**
+ * Trae la información de un contrato de acuerdo a su número
+ */
+function DataCC() {
+    var recordCC = document.getElementById('cnumber').value;
+    google.script.run.withSuccessHandler(populateForm).getRecordCC(recordCC);
+}
+
+/**
+ * Permite rellenar el formulario con la información del contrato seleccionado
+ * @param {array} records Información de los contratos
+ */
+function populateForm(records) {
+    document.getElementById('RecId').value = records[0][0];
+    document.getElementById('ident').value = records[0][1];
+    document.getElementById(records[0][2]).checked = true;
+    document.getElementById('identificacion').value = records[0][3];
+    document.getElementById('cnumber').value = records[0][4];
+    document.getElementById('razonsocial').value = records[0][5];
+    document.getElementById('nombrec').value = records[0][6];
+    document.getElementById('repre').value = records[0][7];
+    document.getElementById('identrepre').value = records[0][8];
+    document.getElementById('identificacionrepre').value = records[0][9];
+    document.getElementById('domi').value = records[0][10];
+    document.getElementById('direc').value = records[0][11];
+    document.getElementById('email').value = records[0][12];
+    document.getElementById('phone').value = records[0][13];
+    document.getElementById('country').value = records[0][14];
+    document.getElementById('fechainicio').value = records[0][15];
+    document.getElementById('fechaterm').value = records[0][16];
+    document.getElementById('objeto').value = records[0][17];
+    document.getElementById('alcan').value = records[0][18];
+    document.getElementById('Proyecto').value = records[0][19];
+    document.getElementById('lugar').value = records[0][20];
+    document.getElementById('tipoc').value = records[0][21];
+    document.getElementById('acuerd').value = records[0][22];
+    document.getElementById('valor').value = records[0][23];
+    document.getElementById('anticipo').value = records[0][24];
+    document.getElementById(records[0][25]).checked = true;
+    document.getElementById('porcrete').value = records[0][26];
+    document.getElementById('encargado').value = records[0][27];
+    document.getElementById(records[0][28]).checked = true;
+    document.getElementById("estado").value = records[0][29];
+    document.getElementById("solicitante").value = records[0][30];
+    document.getElementById("anexos").value = records[0][31];
+    document.getElementById("cfinal").value = records[0][32];
+    document.getElementById("message").innerHTML = "&lt;div class='alert alert-warning' role='alert'>Update Record [ID: " + records[0][0] + "]&lt;/div>";
+}
+
+/**
+ * Genera las diferentes listas desplegables
+ */
+function createCountryDropdown() {
+
+    google.script.run.withSuccessHandler(countryDropDown).getDropdownList("Helpers!A1:A1120");
+    google.script.run.withSuccessHandler(identDropDown).getDropdownList("ident!A1:A5");
+    google.script.run.withSuccessHandler(identrepreDropDown).getDropdownList("ident!A1:A5");
+    google.script.run.withSuccessHandler(acuerdDropDown).getDropdownList("tipoc!A1:A5");
+    google.script.run.withSuccessHandler(estadodDropDown).getDropdownList("Estado del contrato!A1:A5");
+    google.script.run.withSuccessHandler(tipocdDropDown).getDropdownList("Tipo de contrato!A1:A5");
+    google.script.run.withSuccessHandler(lugarDropDown).getDropdownList("Helpers!A1:A1120");
+    google.script.run.withSuccessHandler(scolicitanteDropDown).getDropdownList("SOLICITANTE!A1:A10");
+}
+
+
+/**
+ * Genera una lista de departamentos
+ * @param {array} values Lista de departamentos
+ */
+function countryDropDown(values) {
+    var list = document.getElementById('country');
+    for (var i = 0; i &lt; values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.text = values[i];
+        list.appendChild(option);
+    }
+}
+
+/**
+ * Genera una lista de tipos de identificación
+ * @param {array} values Lista de tipos de identificación
+ */
+function identDropDown(values) {
+    var list = document.getElementById('ident');
+    for (var i = 0; i &lt; values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.text = values[i];
+        list.appendChild(option);
+    }
+}
+
+/**
+ * Genera una lista de tipos de identificación
+ * @param {array} values Lista de tipos de identificación
+ */
+function identrepreDropDown(values) {
+    var list = document.getElementById('identrepre');
+    for (var i = 0; i &lt; values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.text = values[i];
+        list.appendChild(option);
+    }
+}
+
+/**
+ * Genera una lista de tipos de acuerdo
+ * @param {array} values Lista de tipos de acuerdo
+ */
+function acuerdDropDown(values) {
+    var list = document.getElementById('acuerd');
+    for (var i = 0; i &lt; values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.text = values[i];
+        list.appendChild(option);
+    }
+}
+
+/**
+ * Genera una lista de estados
+ * @param {array} values Lista de estados
+ */
+function estadodDropDown(values) {
+    var list = document.getElementById('estado');
+    for (var i = 0; i &lt; values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.text = values[i];
+        list.appendChild(option);
+    }
+}
+
+/**
+ * Genera una lista de tipos de contrato
+ * @param {array} values Lista de tipos de contrato
+ */
+function tipocdDropDown(values) {
+    var list = document.getElementById('tipoc');
+    for (var i = 0; i &lt; values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.text = values[i];
+        list.appendChild(option);
+    }
+}
+
+/**
+ * Genera una lista de lugares de expedición
+ * @param {array} values Lista de lugares de expedición
+ */
+function lugarDropDown(values) {
+    var list = document.getElementById('lugar');
+    for (var i = 0; i &lt; values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.text = values[i];
+        list.appendChild(option);
+    }
+}
+
+/**
+ * Genera una lista de solicitantes
+ * @param {array} values Lista de solicitantes
+ */
+function scolicitanteDropDown(values) {
+    var list = document.getElementById('solicitante');
+    for (var i = 0; i &lt; values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.text = values[i];
+        list.appendChild(option);
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Dec 21 2021 10:31:55 GMT-0500 (hora estándar de Colombia) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
